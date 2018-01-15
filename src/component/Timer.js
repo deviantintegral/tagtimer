@@ -38,11 +38,31 @@ class Timer extends Component {
     };
   }
 
+  /**
+   * Initiate an API request to fetch all projects.
+   */
   componentDidMount() {
     this.projects();
   }
 
+  freckleFetch(url, options = {}) {
+    if (options.headers instanceof Headers) {
+      options.headers.append('Authorization', 'Bearer ' + this.props.accessToken);
+    }
+    return fetch (this.props.freckleProxy + '/' + url, Object.assign({
+      headers: new Headers(({'Authorization': 'Bearer ' + this.props.accessToken})),
+    }, options));
+  }
+
+  /**
+   * Fetch all projects from Freckle.
+   *
+   * @param {string} next
+   *   The next page request, if available. Otherwise, it is assumed this is
+   *   the first request.
+   */
   projects(next = '') {
+    // Reset the state of projects, and prepare our initial API call.
     if (!next) {
       this.setState(() => ({
         projects: [],
@@ -50,10 +70,10 @@ class Timer extends Component {
 
       next = 'https://api.letsfreckle.com/v2/projects/?enabled=true&per_page=100';
     }
+
     const timer = this;
-    fetch(this.props.freckleProxy + '/' + next, {
-      headers:  new Headers(({'Authorization': 'Bearer ' + this.props.accessToken})),
-    }).then(function (response) {
+    this.freckleFetch(next).then(function (response) {
+      // Queue the next API call if required.
       if (response.headers.has('Link')) {
         const link = parseLinkHeader(response.headers.get('Link'));
         if (link.next) {
@@ -63,21 +83,30 @@ class Timer extends Component {
       return response.json();
     })
    .then(function (data) {
+     // Freckle looks to always return in alphanumeric order.
      timer.setState((prevState) => ({
        projects: prevState.projects.concat(data),
      }));
     });
   }
 
+  /**
+   * Log all non-zero timers to Freckle.
+   */
   logAll() {
     const entries = 'https://api.letsfreckle.com/v2/entries';
     const timer = this;
+
     this.state.clocks.forEach((v, i) => {
+      // Skip unused clocks.
       if (v.seconds === 0) {
         return;
       }
 
+      // An empty description is allowed.
       const description = (v.tag + ' ' + v.note).trim();
+
+      // Round up all entries to at least one minute.
       const entry = {
         date: new Date().toISOString(),
         minutes: Math.max(Math.round(v.seconds / 60), 1),
@@ -85,11 +114,10 @@ class Timer extends Component {
         project_id: Number.parseInt(timer.state.selectedProject, 10),
       };
 
-      fetch(this.props.freckleProxy + '/' + entries, {
+      timer.freckleFetch(entries, {
         method: 'POST',
         body: JSON.stringify(entry),
         headers: new Headers({
-          'Authorization': 'Bearer ' + this.props.accessToken,
           'Content-Type': 'application/json'
         })
       }).then(res => res.json())
