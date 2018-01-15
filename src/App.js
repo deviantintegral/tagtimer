@@ -47,7 +47,7 @@ class App extends Component {
 
   componentWillMount() {
     // If we have just completed the OAuth workflow pull in our tokens.
-    if (window.location.pathname == '/tokens') {
+    if (window.location.pathname === '/tokens') {
       let code = window.location.search.split('?code=')[1];
       this.tokens(code);
     }
@@ -55,7 +55,7 @@ class App extends Component {
 
   render() {
     let timer;
-    if (this.state.accessToken != '') {
+    if (this.state.accessToken !== '') {
       timer = <Timer freckleProxy={this.props.freckleProxy} accessToken={this.state.accessToken} refreshToken={this.state.refreshToken} />;
     }
     else {

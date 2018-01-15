@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import parseLinkHeader from 'parse-link-header';
 import TagRow from './TagRow.js';
@@ -12,6 +12,8 @@ class Timer extends Component {
       clocks: [{
         running: false,
         seconds: 0,
+        tag: '',
+        note: '',
       }],
     };
     this.handleAddAnother = this.handleAddAnother.bind(this);
@@ -20,6 +22,8 @@ class Timer extends Component {
     this.onIncrement = this.onIncrement.bind(this);
     this.logAll = this.logAll.bind(this);
     this.onSelectProject = this.onSelectProject.bind(this);
+    this.onTagChange = this.onTagChange.bind(this);
+    this.onNoteChange = this.onNoteChange.bind(this);
   }
 
   componentDidMount() {
@@ -57,14 +61,16 @@ class Timer extends Component {
     const entries = 'https://api.letsfreckle.com/v2/entries';
     const timer = this;
     this.state.clocks.forEach((v, i) => {
-      if (v.seconds = 0) {
+      if (v.seconds === 0) {
         return;
       }
+
+      const description = (v.tag + ' ' + v.note).trim();
       const entry = {
         date: new Date().toISOString(),
         minutes: Math.max(Math.round(v.seconds / 60), 1),
-        description: '',
-        project_id: Number.parseInt(timer.state.selectedProject),
+        description: description,
+        project_id: Number.parseInt(timer.state.selectedProject, 10),
       };
 
       fetch(this.props.freckleProxy + '/' + entries, {
@@ -81,6 +87,8 @@ class Timer extends Component {
           clocks[i] = {
             running: false,
             seconds: 0,
+            tag: '',
+            note: '',
           };
           timer.setState({
             clocks: clocks,
@@ -105,12 +113,35 @@ class Timer extends Component {
     });
   }
 
+  onTagChange(event, row) {
+    event.persist();
+    this.setState((prevState) => {
+      const clocks = prevState.clocks;
+      clocks[row].tag = event.target.value;
+      return {
+        clocks: clocks,
+      };
+    });
+  }
+
+  onNoteChange(event, row) {
+    event.persist();
+    this.setState((prevState) => {
+      const clocks = prevState.clocks;
+      clocks[row].note = event.target.value;
+      return {
+        clocks: clocks,
+      };
+    });
+  }
+
   render() {
     let projects;
     if (this.state.projects.length) {
       const options = this.state.projects.map((project) =>
-        <option value={project.id}>{project.name}</option>
+        <option key={project.id} value={project.id}>{project.name}</option>
       );
+      options.unshift(<option key="select" value="">Select a project...</option>);
       projects = (
         <select onChange={this.onSelectProject}>
           {options}
@@ -122,7 +153,13 @@ class Timer extends Component {
     for (let i = 0; i <= this.state.clocks.length - 1; i++) {
       let last = (i === this.state.clocks.length - 1);
       // @todo Fix passing the clock object.
-      rows[i] = <TagRow row={i} clock={this.state.clocks[i]} onTagInit={this.handleAddAnother} onClockStart={this.onClockStart} onClockPause={this.onClockPause} onIncrement={this.onIncrement} last={last}/>;
+      rows[i] = <TagRow key={i} row={i} clock={this.state.clocks[i]}
+                        onTagInit={this.handleAddAnother}
+                        onTagChange={this.onTagChange}
+                        onNoteChange={this.onNoteChange}
+                        onClockStart={this.onClockStart}
+                        onClockPause={this.onClockPause}
+                        onIncrement={this.onIncrement} last={last}/>;
     }
     return (
       <div>
@@ -140,6 +177,8 @@ class Timer extends Component {
       clocks: prevState.clocks.concat({
         running: false,
         seconds: 0,
+        tag: '',
+        note: '',
       }),
     }));
   }
