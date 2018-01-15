@@ -4,7 +4,7 @@ class Clock extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      running: false,
+      running: this.props.running,
       seconds: 0,
     };
     // This binding is necessary to make `this` work in the callback
@@ -48,7 +48,7 @@ class Clock extends Component {
 
   render() {
     let controls;
-    if (!this.state.running && !this.props.running) {
+    if (!this.state.running) {
       controls = <input type="button" value="Start" onClick={(event) => {
         this.props.onStart(event, this.props.row);
       }}/>;
