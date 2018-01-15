@@ -33,6 +33,7 @@ class Timer extends Component {
     return {
       running: false,
       seconds: 0,
+      lastTick: new Date(),
       tag: '',
       note: '',
     };
@@ -49,6 +50,8 @@ class Timer extends Component {
     if (options.headers instanceof Headers) {
       options.headers.append('Authorization', 'Bearer ' + this.props.accessToken);
     }
+
+    // Todo add centralized refreshToken handling.
     return fetch (this.props.freckleProxy + '/' + url, Object.assign({
       headers: new Headers(({'Authorization': 'Bearer ' + this.props.accessToken})),
     }, options));
@@ -135,7 +138,12 @@ class Timer extends Component {
   onIncrement(event, row) {
     this.setState((prevState) => {
       const clocks = prevState.clocks;
-      clocks[row].seconds++;
+
+      // Background timers may slow, so we need to use the real time to keep
+      // clocks in sync.
+      const now = new Date();
+      clocks[row].seconds += Math.round((now - clocks[row].lastTick) / 1000);
+      clocks[row].lastTick = now;
       return {
         clocks: clocks,
       };
@@ -220,6 +228,7 @@ class Timer extends Component {
         clocks[i].running = false;
       });
       clocks[row].running = true;
+      clocks[row].lastTick = new Date();
       return {
         clocks: clocks,
       };
