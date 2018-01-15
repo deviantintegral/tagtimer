@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import parseLinkHeader from 'parse-link-header';
 import TagRow from './TagRow.js';
 
@@ -9,9 +10,12 @@ class Timer extends Component {
       projects: [],
       clocks: [false],
     };
-    this.projects();
     this.handleAddAnother = this.handleAddAnother.bind(this);
     this.onClockStart = this.onClockStart.bind(this);
+  }
+
+  componentDidMount() {
+    this.projects();
   }
 
   projects(next = '') {
@@ -24,7 +28,7 @@ class Timer extends Component {
     }
     const timer = this;
     fetch('http://localhost:8081/' + next, {
-      headers:  new Headers(({'Authorization': 'Bearer ' + window.localStorage.access_token})),
+      headers:  new Headers(({'Authorization': 'Bearer ' + this.props.accessToken})),
     }).then(function (response) {
       if (response.headers.has('Link')) {
         const link = parseLinkHeader(response.headers.get('Link'));

@@ -4,7 +4,9 @@
   "dependencies": {
     "oauth": "^0.9.15",
     "parse-link-header": "^1.0.1",
+    "prop-types": "^15.6.0",
     "react": "^16.2.0",
+    "react-cookie": "^2.1.2",
     "react-dom": "^16.2.0",
     "react-scripts": "1.0.17"
   },
