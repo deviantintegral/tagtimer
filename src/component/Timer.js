@@ -8,6 +8,7 @@ class Timer extends Component {
     super(props);
     this.state = {
       projects: [],
+      selectedProject: null,
       clocks: [{
         running: false,
         seconds: 0,
@@ -18,6 +19,7 @@ class Timer extends Component {
     this.onClockPause = this.onClockPause.bind(this);
     this.onIncrement = this.onIncrement.bind(this);
     this.logAll = this.logAll.bind(this);
+    this.onSelectProject = this.onSelectProject.bind(this);
   }
 
   componentDidMount() {
@@ -58,12 +60,11 @@ class Timer extends Component {
       if (v.seconds = 0) {
         return;
       }
-      // Add project ID.
       const entry = {
         date: new Date().toISOString(),
         minutes: Math.max(Math.round(v.seconds / 60), 1),
         description: '',
-        project_id: 105267,
+        project_id: Number.parseInt(timer.state.selectedProject),
       };
 
       fetch(this.props.freckleProxy + '/' + entries, {
@@ -98,6 +99,12 @@ class Timer extends Component {
     });
   }
 
+  onSelectProject(event) {
+    this.setState({
+      selectedProject: event.target.value,
+    });
+  }
+
   render() {
     let projects;
     if (this.state.projects.length) {
@@ -105,7 +112,7 @@ class Timer extends Component {
         <option value={project.id}>{project.name}</option>
       );
       projects = (
-        <select>
+        <select onChange={this.onSelectProject}>
           {options}
         </select>
       );
