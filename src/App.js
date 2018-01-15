@@ -13,7 +13,6 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-
     const { cookies } = this.props;
 
     this.state ={
@@ -27,8 +26,7 @@ class App extends Component {
    * @param {string} code
    */
   tokens(code) {
-    // @todo host and port?
-    fetch('http://localhost:8080/authorize?code=' + code).then((response) => this.saveTokens(response));
+    fetch(this.props.OAuthProxy + '/authorize?code=' + code).then((response) => this.saveTokens(response));
   }
 
   saveTokens(response) {
@@ -41,23 +39,27 @@ class App extends Component {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
       });
-      window.location = 'http://localhost:3000/';
+
+      // Clear the OAuth code from the URL.
+      window.location = window.location.origin;
     });
   }
 
-  render() {
+  componentWillMount() {
+    // If we have just completed the OAuth workflow pull in our tokens.
     if (window.location.pathname == '/tokens') {
-
       let code = window.location.search.split('?code=')[1];
       this.tokens(code);
     }
+  }
 
+  render() {
     let timer;
     if (this.state.accessToken != '') {
-      timer = <Timer accessToken={this.state.accessToken} refreshToken={this.state.refreshToken} />;
+      timer = <Timer freckleProxy={this.props.freckleProxy} accessToken={this.state.accessToken} refreshToken={this.state.refreshToken} />;
     }
     else {
-      timer = <a href="http://localhost:8080/start">Login to Freckle</a>;
+      timer = <a href={this.props.OAuthProxy + "/start"}>Login to Freckle</a>;
     }
     return (
       <div className="App">

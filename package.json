@@ -11,8 +11,8 @@
     "react-scripts": "1.0.17"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_OAUTH_PROXY=$OAUTH_PROXY REACT_APP_FRECKLE_PROXY=$FRECKLE_PROXY react-scripts start",
+    "build": "REACT_APP_OAUTH_PROXY=$OAUTH_PROXY REACT_APP_FRECKLE_PROXY=$FRECKLE_PROXY react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

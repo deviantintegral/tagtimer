@@ -27,7 +27,7 @@ class Timer extends Component {
       next = 'https://api.letsfreckle.com/v2/projects/?enabled=true&per_page=100';
     }
     const timer = this;
-    fetch('http://localhost:8081/' + next, {
+    fetch(this.props.freckleProxy + '/' + next, {
       headers:  new Headers(({'Authorization': 'Bearer ' + this.props.accessToken})),
     }).then(function (response) {
       if (response.headers.has('Link')) {

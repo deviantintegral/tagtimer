@@ -37,8 +37,6 @@ class Clock extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.running);
-    console.log(this.state.running);
     if (nextProps.running && !this.state.running) {
       this.startClock();
     }
