@@ -17,6 +17,7 @@ class Timer extends Component {
     this.onClockStart = this.onClockStart.bind(this);
     this.onClockPause = this.onClockPause.bind(this);
     this.onIncrement = this.onIncrement.bind(this);
+    this.logAll = this.logAll.bind(this);
   }
 
   componentDidMount() {
@@ -50,6 +51,43 @@ class Timer extends Component {
     });
   }
 
+  logAll() {
+    const entries = 'https://api.letsfreckle.com/v2/entries';
+    const timer = this;
+    this.state.clocks.forEach((v, i) => {
+      if (v.seconds = 0) {
+        return;
+      }
+      // Add project ID.
+      const entry = {
+        date: new Date().toISOString(),
+        minutes: Math.max(Math.round(v.seconds / 60), 1),
+        description: '',
+        project_id: 105267,
+      };
+
+      fetch(this.props.freckleProxy + '/' + entries, {
+        method: 'POST',
+        body: JSON.stringify(entry),
+        headers: new Headers({
+          'Authorization': 'Bearer ' + this.props.accessToken,
+          'Content-Type': 'application/json'
+        })
+      }).then(res => res.json())
+        .then(response => {
+          console.log('Success:', response);
+          const clocks = this.state.clocks;
+          clocks[i] = {
+            running: false,
+            seconds: 0,
+          };
+          timer.setState({
+            clocks: clocks,
+          })
+        });
+    });
+  }
+
   onIncrement(event, row) {
     this.setState((prevState) => {
       const clocks = prevState.clocks;
@@ -76,6 +114,7 @@ class Timer extends Component {
     let rows = [];
     for (let i = 0; i <= this.state.clocks.length - 1; i++) {
       let last = (i === this.state.clocks.length - 1);
+      // @todo Fix passing the clock object.
       rows[i] = <TagRow row={i} clock={this.state.clocks[i]} onTagInit={this.handleAddAnother} onClockStart={this.onClockStart} onClockPause={this.onClockPause} onIncrement={this.onIncrement} last={last}/>;
     }
     return (
@@ -83,7 +122,7 @@ class Timer extends Component {
         {projects}
         <div >
           {rows}
-          <input type="button" value="Log all timers" />
+          <input type="button" value="Log all timers" onClick={this.logAll}/>
         </div>
       </div>
     );
