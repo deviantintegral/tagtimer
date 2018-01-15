@@ -84,12 +84,7 @@ class Timer extends Component {
         .then(response => {
           console.log('Success:', response);
           const clocks = this.state.clocks;
-          clocks[i] = {
-            running: false,
-            seconds: 0,
-            tag: '',
-            note: '',
-          };
+          clocks.splice(i, 1);
           timer.setState({
             clocks: clocks,
           })
@@ -152,8 +147,8 @@ class Timer extends Component {
     let rows = [];
     for (let i = 0; i <= this.state.clocks.length - 1; i++) {
       let last = (i === this.state.clocks.length - 1);
-      // @todo Fix passing the clock object.
-      rows[i] = <TagRow key={i} row={i} clock={this.state.clocks[i]}
+      rows[i] = <TagRow key={i} row={i}
+                        {...this.state.clocks[i]}
                         onTagInit={this.handleAddAnother}
                         onTagChange={this.onTagChange}
                         onNoteChange={this.onNoteChange}

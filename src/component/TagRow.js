@@ -13,11 +13,11 @@ class TagRow extends Component {
   render() {
     return (
       <div>
-          <input type="textfield" placeholder="Tag" onChange={this.onTagChange} />
-          <input type="textfield" placeholder="Add notes..." onChange={(event) => {
+          <input type="textfield" placeholder="Tag" onChange={this.onTagChange} value={this.props.tag} />
+          <input type="textfield" placeholder="Add notes..." value={this.props.note} onChange={(event) => {
             this.props.onNoteChange(event, this.props.row);
           }}/>
-        <Clock row={this.props.row} {...this.props.clock} onStart={this.props.onClockStart} onPause={this.props.onClockPause} onIncrement={this.props.onIncrement} />
+        <Clock row={this.props.row} running={this.props.running} seconds={this.props.seconds} onStart={this.props.onClockStart} onPause={this.props.onClockPause} onIncrement={this.props.onIncrement} />
       </div>
     );
   }
