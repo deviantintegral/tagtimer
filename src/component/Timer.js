@@ -9,13 +9,10 @@ class Timer extends Component {
     this.state = {
       projects: [],
       selectedProject: null,
-      clocks: [{
-        running: false,
-        seconds: 0,
-        tag: '',
-        note: '',
-      }],
+      clocks: [Timer._initialClock()],
     };
+
+    // Binding callback methods.
     this.handleAddAnother = this.handleAddAnother.bind(this);
     this.onClockStart = this.onClockStart.bind(this);
     this.onClockPause = this.onClockPause.bind(this);
@@ -24,6 +21,21 @@ class Timer extends Component {
     this.onSelectProject = this.onSelectProject.bind(this);
     this.onTagChange = this.onTagChange.bind(this);
     this.onNoteChange = this.onNoteChange.bind(this);
+  }
+
+  /**
+   * Return an object for a new clock.
+   *
+   * @returns {{running: boolean, seconds: number, tag: string, note: string}}
+   * @private
+   */
+  static _initialClock() {
+    return {
+      running: false,
+      seconds: 0,
+      tag: '',
+      note: '',
+    };
   }
 
   componentDidMount() {
@@ -82,7 +94,7 @@ class Timer extends Component {
         })
       }).then(res => res.json())
         .then(response => {
-          console.log('Success:', response);
+          // @todo Error handling for failed requests.
           const clocks = this.state.clocks;
           clocks.splice(i, 1);
           timer.setState({
@@ -169,12 +181,7 @@ class Timer extends Component {
 
   handleAddAnother(event) {
     this.setState((prevState, props) => ({
-      clocks: prevState.clocks.concat({
-        running: false,
-        seconds: 0,
-        tag: '',
-        note: '',
-      }),
+      clocks: prevState.clocks.concat(Timer._initialClock()),
     }));
   }
 
