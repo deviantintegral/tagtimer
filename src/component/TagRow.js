@@ -15,7 +15,7 @@ class TagRow extends Component {
       <div>
         <input type="textfield" placeholder="Tag" onChange={this.onTagChange} />
         <input type="textfield" placeholder="Add notes..." />
-        <Clock row={this.props.row} running={this.props.running} onStart={this.props.onClockStart} />
+        <Clock row={this.props.row} {...this.props.clock} onStart={this.props.onClockStart} onPause={this.props.onClockPause} onIncrement={this.props.onIncrement} />
       </div>
     );
   }

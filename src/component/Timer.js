@@ -8,10 +8,15 @@ class Timer extends Component {
     super(props);
     this.state = {
       projects: [],
-      clocks: [false],
+      clocks: [{
+        running: false,
+        seconds: 0,
+      }],
     };
     this.handleAddAnother = this.handleAddAnother.bind(this);
     this.onClockStart = this.onClockStart.bind(this);
+    this.onClockPause = this.onClockPause.bind(this);
+    this.onIncrement = this.onIncrement.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +50,16 @@ class Timer extends Component {
     });
   }
 
+  onIncrement(event, row) {
+    this.setState((prevState) => {
+      const clocks = prevState.clocks;
+      clocks[row].seconds++;
+      return {
+        clocks: clocks,
+      };
+    });
+  }
+
   render() {
     let projects;
     if (this.state.projects.length) {
@@ -61,7 +76,7 @@ class Timer extends Component {
     let rows = [];
     for (let i = 0; i <= this.state.clocks.length - 1; i++) {
       let last = (i === this.state.clocks.length - 1);
-      rows[i] = <TagRow row={i} running={this.state.clocks[i]} onTagInit={this.handleAddAnother} onClockStart={this.onClockStart} last={last}/>;
+      rows[i] = <TagRow row={i} clock={this.state.clocks[i]} onTagInit={this.handleAddAnother} onClockStart={this.onClockStart} onClockPause={this.onClockPause} onIncrement={this.onIncrement} last={last}/>;
     }
     return (
       <div>
@@ -76,7 +91,10 @@ class Timer extends Component {
 
   handleAddAnother(event) {
     this.setState((prevState, props) => ({
-      clocks: prevState.clocks.concat(false),
+      clocks: prevState.clocks.concat({
+        running: false,
+        seconds: 0,
+      }),
     }));
   }
 
@@ -84,9 +102,19 @@ class Timer extends Component {
     this.setState((prevState, props) => {
       const clocks = prevState.clocks;
       clocks.forEach((v, i) => {
-        clocks[i] = false;
+        clocks[i].running = false;
       });
-      clocks[row] = true;
+      clocks[row].running = true;
+      return {
+        clocks: clocks,
+      };
+    });
+  }
+
+  onClockPause(event, row) {
+    this.setState((prevState, props) => {
+      const clocks = prevState.clocks;
+      clocks[row].running = false;
       return {
         clocks: clocks,
       };
