@@ -56,7 +56,20 @@ class App extends Component {
   render() {
     let timer;
     if (this.state.accessToken !== '') {
-      timer = <Timer freckleProxy={this.props.freckleProxy} accessToken={this.state.accessToken} refreshToken={this.state.refreshToken} />;
+      timer = (
+        <div>
+          <input type="button" value="Log out" onClick={() => {
+            const { cookies } = this.props;
+            cookies.remove('access_token');
+            cookies.remove('refresh_token');
+            this.setState({
+              accessToken: '',
+              refreshToken: '',
+            })
+          }}/>
+          <Timer freckleProxy={this.props.freckleProxy} accessToken={this.state.accessToken} refreshToken={this.state.refreshToken} />
+        </div>
+      );
     }
     else {
       timer = <a href={this.props.OAuthProxy + "/start"}>Login to Freckle</a>;

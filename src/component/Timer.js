@@ -219,7 +219,7 @@ class Timer extends Component {
           <ul>
             <li>There is absolutely no timer data saved unless they are logged, either client or server side. Take screenshots before submitting!</li>
             <li>Timer data is not synced between tabs or computers.</li>
-            <li>OAuth refreshing is not implemented yet. Be prepared to manually delete cookies.</li>
+            <li>OAuth refreshing is not implemented yet. Be prepared to manually re-login after a few days.</li>
           </ul>
         </div>
       </div>
