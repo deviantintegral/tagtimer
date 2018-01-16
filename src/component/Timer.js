@@ -211,6 +211,14 @@ class Timer extends Component {
           {rows}
             <input className="App-submit" type="button" value="Log all timers" onClick={this.logAll}/>
         </div>
+        <div className="App-known-issues">
+          <p>Known issues:</p>
+          <ul>
+            <li>There is absolutely no timer data saved unless they are logged, either client or server side. Take screenshots before submitting!</li>
+            <li>Timer data is not synced between tabs or computers.</li>
+            <li>OAuth refreshing is not implemented yet. Be prepared to manually delete cookies.</li>
+          </ul>
+        </div>
       </div>
     );
   }

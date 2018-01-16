@@ -22,6 +22,12 @@
   font-size: large;
 }
 
+.App-known-issues {
+  font-size: small;
+  text-align: left;
+  margin: 5px;
+}
+
 .App-clock {
   display: inline;
 }
