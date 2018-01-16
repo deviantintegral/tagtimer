@@ -180,6 +180,8 @@ class Timer extends Component {
 
   render() {
     let projects;
+    let rows = [];
+    let logAll;
     if (this.state.projects.length) {
       const options = this.state.projects.map((project) =>
         <option key={project.id} value={project.id}>{project.name}</option>
@@ -190,26 +192,27 @@ class Timer extends Component {
           {options}
         </select>
       );
+      for (let i = 0; i <= this.state.clocks.length - 1; i++) {
+        let last = (i === this.state.clocks.length - 1);
+        rows[i] = <TagRow key={i} row={i}
+                          {...this.state.clocks[i]}
+                          onTagInit={this.handleAddAnother}
+                          onTagChange={this.onTagChange}
+                          onNoteChange={this.onNoteChange}
+                          onClockStart={this.onClockStart}
+                          onClockPause={this.onClockPause}
+                          onIncrement={this.onIncrement} last={last}/>;
+      }
+
+      logAll = <input className="App-submit" type="button" value="Log all timers" onClick={this.logAll}/>;
     }
 
-    let rows = [];
-    for (let i = 0; i <= this.state.clocks.length - 1; i++) {
-      let last = (i === this.state.clocks.length - 1);
-      rows[i] = <TagRow key={i} row={i}
-                        {...this.state.clocks[i]}
-                        onTagInit={this.handleAddAnother}
-                        onTagChange={this.onTagChange}
-                        onNoteChange={this.onNoteChange}
-                        onClockStart={this.onClockStart}
-                        onClockPause={this.onClockPause}
-                        onIncrement={this.onIncrement} last={last}/>;
-    }
     return (
       <div>
         {projects}
         <div>
           {rows}
-            <input className="App-submit" type="button" value="Log all timers" onClick={this.logAll}/>
+          {logAll}
         </div>
         <div className="App-known-issues">
           <p>Known issues:</p>
