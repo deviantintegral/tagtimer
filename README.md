@@ -1,10 +1,10 @@
 # Tag timer for Freckle
 
-Freckle's timer is project focused, which is a poor UI for teams who stick to a
-small number of projects. This alternative take on a timer captures multiple
-entries for a single project at the same time, encouraging team members to be
-more explicit in their logging (without adding significant friction to the time
-logging process).
+[Freckle's](https://letsfreckle.com) timer is project focused, which is a poor
+UI for teams who stick to a small number of projects. This alternative take on
+a timer captures multiple entries for a single project at the same time,
+encouraging team members to be more explicit in their logging (without adding
+significant friction to the time logging process).
 
 ## Requirements
 
