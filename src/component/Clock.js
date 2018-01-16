@@ -38,7 +38,7 @@ class Clock extends Component {
     }
 
     return (
-      <div>
+      <div className="App-clock">
         {controls}
         {this.props.seconds}
       </div>

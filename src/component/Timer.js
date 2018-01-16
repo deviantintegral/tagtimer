@@ -207,9 +207,9 @@ class Timer extends Component {
     return (
       <div>
         {projects}
-        <div >
+        <div>
           {rows}
-          <input type="button" value="Log all timers" onClick={this.logAll}/>
+            <input className="App-submit" type="button" value="Log all timers" onClick={this.logAll}/>
         </div>
       </div>
     );
